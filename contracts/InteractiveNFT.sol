@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 
 pragma solidity >=0.7.0 <0.9.0;
 
@@ -10,34 +10,38 @@ contract InteractiveNFT is ERC721, Ownable {
     string private script;
     uint256 private mintIndex = 0;
 
-    mapping(uint256 => string) public bgColorMap;
+    mapping(uint256 => string) public colorMap;
     mapping(uint256 => string) public textMap;
+
+    event SetText(address indexed user, uint256 tokenId, string text);
+    event SetColor(address indexed user, uint256 tokenId, string color);
 
     constructor() ERC721("InteractiveNFT", "InteractiveNFT")  {}
 
     function mint() public {
         _safeMint(msg.sender, mintIndex);
-        bgColorMap[mintIndex] = "black";
-        textMap[mintIndex] = "ok";
+        colorMap[mintIndex] = "black";
+        textMap[mintIndex] = "good morning";
         mintIndex++;
     }
 
     function setText(uint256 tokenId, string memory text) public {
         require(msg.sender == ownerOf(tokenId), "only nft owner can change");
         textMap[tokenId] = text;
+        emit SetText(msg.sender, tokenId, text);
     }
 
-    function setBgColor(uint256 tokenId, string memory color) public {
+    function setColor(uint256 tokenId, string memory color) public {
         require(msg.sender == ownerOf(tokenId), "only nft owner can change");
-        bgColorMap[tokenId] = color;  
+        colorMap[tokenId] = color;  
+        emit SetColor(msg.sender, tokenId, color);
     }
     
-    function setScript(string memory s) public onlyOwner {
-        script = s;
+    function setScript(string memory  _script) public onlyOwner {
+        script = _script;
     }
 
-
-    function getScript() internal view returns (string memory) {
+    function getScript() public view returns (string memory) {
         return script;
     }
 
@@ -45,9 +49,9 @@ contract InteractiveNFT is ERC721, Ownable {
     function tokenURI(uint256 tokenId) override public view  returns (string memory) {
         string[9] memory parts;
         parts[0] = '<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMinYMin meet" viewBox="0 0 350 350"><style>.base { fill: white; font-family: serif; font-size: 14px; }</style><rect width="100%" height="100%" fill="';
-        parts[1] = bgColorMap[tokenId];
+        parts[1] = colorMap[tokenId];
         parts[2] = '"/><text x="10" y="20" class="base" id="changecolor">';
-        parts[3] = "change background color ";
+        parts[3] = "change color ";
         parts[4] = '</text><text x="10" y="40" class="base" id="changetext">';
         parts[5] = "change text ";
         parts[6] = '</text><text x="10" y="60" class="base" id="showtext">';
@@ -56,7 +60,7 @@ contract InteractiveNFT is ERC721, Ownable {
 
         string memory output = string(abi.encodePacked(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7], parts[8]));
         
-        string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "Bag #', toString(tokenId), '", "description": "interactive NFT", "image": "data:image/svg+xml;base64,', Base64.encode(bytes(output)), '","script": "', getScript(), '"}'))));
+        string memory json = Base64.encode(bytes(string(abi.encodePacked('{"name": "NFT #', toString(tokenId), '", "description": "interactive NFT", "image": "data:image/svg+xml;base64,', Base64.encode(bytes(output)), '","script": "', getScript(), '"}'))));
         output = string(abi.encodePacked('data:application/json;base64,', json));
 
         return output;

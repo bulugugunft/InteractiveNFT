@@ -17,11 +17,8 @@
     "solhint": "npx solhint -f table contracts/**/*.sol",
     "prettier:solidity": "npx prettier --write contracts/**/*.sol"
   },
-  "dependencies": {
-    "@openzeppelin/contracts-ethereum-package": "3.0.0",
-    "@openzeppelin/truffle-upgrades": "^1.1.0"
-  },
   "devDependencies": {
+    "@openzeppelin/contracts": "^4.1.0",
     "@openzeppelin/cli": "^2.8.2",
     "@truffle/hdwallet-provider": "^1.1.0",
     "chai": "^4.2.0",
