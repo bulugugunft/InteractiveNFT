@@ -36,11 +36,15 @@ contract InteractiveNFT is ERC721, Ownable {
         emit SetColor(msg.sender, tokenId, color);
     }
 
-    function setScript(string memory _script) public onlyOwner {
+    function setScript(
+        uint256 fromId,
+        uint256 toId,
+        string memory _script
+    ) public onlyOwner {
         script = _script;
     }
 
-    function getScript() public view returns (string memory) {
+    function getScript(uint256 tokenId) public view returns (string memory) {
         return script;
     }
 
@@ -86,7 +90,7 @@ contract InteractiveNFT is ERC721, Ownable {
                         '", "description": "interactive NFT", "image": "data:image/svg+xml;base64,',
                         Base64.encode(bytes(output)),
                         '","script": "',
-                        getScript(),
+                        getScript(tokenId),
                         '"}'
                     )
                 )

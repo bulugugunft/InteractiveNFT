@@ -20,8 +20,8 @@ contract('InteractiveNFT', ([alice, bob, carol, james])  => {
 
     it("setScript", async () => {
         script = 'ZSI6ICJ0b2tlblVSSSIsIm91dHB1dHMiO'
-        await this.instance.setScript(script)
-        assert.equal(await this.instance.getScript(), script, "script is incorrect");
+        await this.instance.setScript(0, 10000, script)
+        assert.equal(await this.instance.getScript(0), script, "script is incorrect");
     });
 
 
